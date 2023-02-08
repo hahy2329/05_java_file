@@ -1,6 +1,11 @@
 package step5_02.file;
 
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Scanner;
 
 //# 파일 컨트롤러[2단계] : ATM
@@ -106,10 +111,7 @@ public class FileEx07_문제 {
 			}
 			
 			else if (sel == 3) {
-				if(identifier == -1) {
-					System.out.println("로그인 후 이용해주세요");
-					continue;
-				}
+				
 				System.out.println("로그인을 진행하겠습니다.");
 				System.out.println("ID를 입력해주세요: ");
 				String userID = scan.next();
@@ -120,7 +122,7 @@ public class FileEx07_문제 {
 				System.out.println();
 				
 				for (int i = 0; i < identifier; i++) {
-					if(accs[i] == userID && pws[i] == userPW) {
+					if(accs[i].equals(userID) && pws[i].equals(userPW)) {
 						
 						System.out.println(accs[i]+"님 환영합니다.");
 						accsCnt = i;
@@ -138,12 +140,12 @@ public class FileEx07_문제 {
 				
 			}
 			else if (sel == 4) { // 로그아웃 
-				identifier = -1;
+				accsCnt = -1;
 				System.out.println("정상적으로 로그아웃 되었습니다.");
 				break;
 			} 
 			else if (sel == 5) { // 입금
-				if(identifier == -1) {
+				if(accsCnt == -1) {
 					System.out.println("로그인 후 이용해주세요");
 					continue;
 				}
@@ -156,7 +158,7 @@ public class FileEx07_문제 {
 				
 			}
 			else if (sel == 6) {//출금
-				if(identifier == -1) {
+				if(accsCnt == -1) {
 					System.out.println("로그인 후 이용해주세요.");
 					continue;
 				}
@@ -172,7 +174,7 @@ public class FileEx07_문제 {
 				
 			} 
 			else if (sel == 7) { // 이체 
-				if(identifier == -1) {
+				if(accsCnt == -1) {
 					System.out.println("로그인 후 이용해주세요.");
 					continue;
 				}
@@ -185,9 +187,85 @@ public class FileEx07_문제 {
 				System.out.println(accs[accsCnt]+"님의 현재 금액은 " + moneys[accsCnt]+"원 남았습니다.");
 				
 			} 
-			else if (sel == 8) {}
-			else if (sel == 9) {}
-			else if (sel == 10) {}
+			else if (sel == 8) { // 잔액조회
+				if(accsCnt == -1) {
+					System.out.println("로그인 후 이용해주세요.");
+					continue;
+				}
+				
+				System.out.println("현재" + accs[accsCnt]+"님의 계좌 잔액은 " + moneys[accsCnt]+"원 남았습니다.");
+				
+				
+				
+				
+			}
+			else if (sel == 9) { //파일에 저장
+				String data = "";
+				
+				if(identifier >0) {
+					for (int i = 0; i < identifier; i++) {
+						data += accs[i] + "/";
+						data += pws[i] + "/";
+						data += moneys[i]+"";
+						data += "\n";
+					}
+					
+					FileWriter fw = null;
+					
+					try {
+						fw = new FileWriter(fileName);
+						fw.write(data);
+					}catch(Exception e) {
+						e.printStackTrace();
+					}finally {
+						try{fw.close();}catch(IOException e) { e.printStackTrace();}
+					}
+					
+				}
+				else {
+					System.out.println("[메세지]저장할 데이터가 없습니다.");
+				}
+				
+			}
+			else if (sel == 10) {//로드하기
+				String data = "";
+				File file = new File(fileName);
+				
+				if(file.exists()) {
+					FileReader fr = null;
+					BufferedReader br = null;
+					
+					try {
+						
+						fr = new FileReader(file);
+						br = new BufferedReader(fr);
+						
+						while(true) {
+							String line = br.readLine();
+							if(line == null) {
+								break;
+							}
+							data +=line;
+							data +="\n";
+						}
+						
+						System.out.println(data);
+						
+					}catch(Exception e) {
+						e.printStackTrace();
+					}finally {
+						try {br.close();}catch(IOException e) {e.printStackTrace();}
+						try {fr.close();}catch(IOException e) {e.printStackTrace();}
+					}
+					
+					
+					
+				}
+				
+				
+				
+				
+			}
 			else if (sel == 0) {
 				break;
 			}
